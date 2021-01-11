@@ -38,7 +38,7 @@
 				$stroke2['x'] = $p['x'] + ($x2['x'] - $p['x']) * $proportion;
 				$stroke2['y'] = $p['y'] + ($x2['y'] - $p['y']) * $proportion;
 				$yOutput = $stroke1['y'] + ($stroke2['y'] - $stroke1['y']) * $proportion;
-				echo $yOutput;
+				return $yOutput;
 			}
 		}
 
