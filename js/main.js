@@ -4,33 +4,34 @@ ctx = canvas.getContext('2d');
 ctx.width = window.innerWidth;
 ctx.height = window.innerHeight;
 
-x1 = {
-	x: 0,
-	y: 100,
-	color: 'black',
-	thikness: 1,
-};
+let xhr = new XMLHttpRequest();
 
-x2 = {
-	x: 100,
-	y: 0,
-	color: 'black',
-	thikness: 1,
-};
+xhr.open( 'GET', 'api.php');
 
-p = {
-	x: 0,
-	y: 0,
-	color: 'black',
-	thikness: 1,
-};
+xhr.send();
 
-step = 0.05;
+xhr.onreadystatechange = () => {
 
-ctx.fillRect( x1.x, x1.y, x1.thikness, x1.thikness, x1.color);
-ctx.fillRect( x2.x, x2.y, x2.thikness, x2.thikness, x2.color);
-ctx.fillRect( p.x, p.y, p.thikness, p.thikness, p.color);
+	if(xhr.readyState === 4 && xhr.status === 200) {
+		response = xhr.responseText;
+		values = JSON.parse(response);
+		console.log( values);
 
-for (var i = 0.0; i <= 1.0; i += step) {
-	console.log(i);
+		ctx.fillStyle = 'white';
+		ctx.fillRect( values.x1.x, values.x1.y, 5, 5);
+		ctx.fillRect( values.x2.x, values.x2.y, 5, 5);
+
+		for (var i = 0; i < values.sequence.x.length; i++) {
+			ctx.fillRect( values.sequence.x[i], values.sequence.y[i], 2.5, 2.5);
+		}
+
+		ctx.fillStyle = 'red';
+		ctx.fillRect( values.xInput.x, values.xInput.y, 5, 5);
+
+		ctx.fillStyle = 'blue';
+		ctx.fillRect( values.p.x, values.p.y, 5, 5);
+
+		document.querySelector('#response').innerHTML = "Значение Y равно: " + values.xInput.y;
+	}
+
 }
