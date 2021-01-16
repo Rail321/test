@@ -4,34 +4,48 @@ ctx = canvas.getContext('2d');
 ctx.width = window.innerWidth;
 ctx.height = window.innerHeight;
 
-let xhr = new XMLHttpRequest();
+ctx.transform(1, 0, 0, -1, 0, canvas.height)
 
-xhr.open( 'GET', 'api.php');
+const resizeX = 1;
+const resizeY = 0.75;
 
-xhr.send();
+const form = document.querySelector("#form");
 
-xhr.onreadystatechange = () => {
+form.addEventListener('submit', (event) => {
+	event.preventDefault();
 
-	if(xhr.readyState === 4 && xhr.status === 200) {
-		response = xhr.responseText;
-		values = JSON.parse(response);
-		console.log( values);
+	let xhr = new XMLHttpRequest();
 
-		ctx.fillStyle = 'white';
-		ctx.fillRect( values.x1.x, values.x1.y, 5, 5);
-		ctx.fillRect( values.x2.x, values.x2.y, 5, 5);
+	xhr.open( 'POST', 'api.php');
 
-		for (var i = 0; i < values.sequence.x.length; i++) {
-			ctx.fillRect( values.sequence.x[i], values.sequence.y[i], 2.5, 2.5);
+	xhr.send( new FormData(form));
+
+	xhr.onreadystatechange = () => {
+
+		if(xhr.readyState === 4 && xhr.status === 200) {
+			response = xhr.responseText;
+			values = JSON.parse(response);
+
+			ctx.fillStyle = 'black';
+			ctx.fillRect( 0, 0, ctx.width, ctx.height);
+
+			ctx.fillStyle = 'white';
+			ctx.fillRect( values.x1.x * resizeX, values.x1.y * resizeY, 3, 3);
+			ctx.fillRect( values.x2.x * resizeX, values.x2.y * resizeY, 3, 3);
+
+			for (var i = 0; i < values.sequence.x.length; i++) {
+				ctx.fillRect( values.sequence.x[i] * resizeX, values.sequence.y[i] * resizeY, 1.5, 1.5);
+			}
+
+			ctx.fillStyle = 'red';
+			ctx.fillRect( values.xInput.x * resizeX, values.xInput.y * resizeY, 3, 3);
+
+			ctx.fillStyle = 'blue';
+			ctx.fillRect( values.p.x * resizeX, values.p.y * resizeY, 3, 3);
+
+			document.querySelector('#response').innerHTML = "Значение Y равно: " + values.xInput.y;
 		}
 
-		ctx.fillStyle = 'red';
-		ctx.fillRect( values.xInput.x, values.xInput.y, 5, 5);
-
-		ctx.fillStyle = 'blue';
-		ctx.fillRect( values.p.x, values.p.y, 5, 5);
-
-		document.querySelector('#response').innerHTML = "Значение Y равно: " + values.xInput.y;
 	}
 
-}
+});

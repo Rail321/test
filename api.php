@@ -1,23 +1,25 @@
 <?php
 
+	#print_r( $_POST);
+
 	$x1 = array(
-		'x' => 10,
-		'y' => 10,
+		'x' => floatval($_POST['x1']['x']),
+		'y' => $_POST['x1']['y'],
 	);
 
 	$x2 = array(
-		'x' => 200,
-		'y' => 125,
+		'x' => $_POST['x2']['x'],
+		'y' => $_POST['x2']['y'],
 	);
 
 	$p = array(
-		'x' => 10,
-		'y' => 50,
+		'x' => $_POST['p']['x'],
+		'y' => $_POST['p']['y'],
 	);
 
-	$xInput = 100;
+	$xInput = $_POST['xInput'];
 
-	$step = 0.05;
+	$step = $_POST['step'];
 
 	function getValues( $xInput, $x1, $x2, $p, $stepProportion) {
 
