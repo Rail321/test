@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+</head>
+<body>
+
+	<canvas id="canvas"></canvas>
+
+	<style>
+
+		* {
+			padding: 0;
+			margin: 0;
+		}
+
+		canvas {
+			display: block;
+			width: 100%;
+			height: 100vh;
+		}
+
+	</style>
+
+	<script>
+
+		canvas = document.querySelector('#canvas');
+		ctx = canvas.getContext('2d');
+
+		ctx.width = window.innerWidth;
+		ctx.height = window.innerHeight;
+
+		ctx.transform(1, 0, 0, -1, 0, canvas.height)
+
+		ctx.fillStyle = "black";
+		ctx.fillRect( 0, 0, ctx.width, ctx.height);
+
+		size = 2;
+
+		x1 = {
+			x: 50,
+			y: 110,
+		}
+
+		x2 = {
+			x: 110,
+			y: 10,
+		}
+
+		p = {
+			x: 10,
+			y: 55,
+		}
+
+		ctx.fillStyle = "white";
+		ctx.fillRect( x1.x, x1.y, size, size);
+		ctx.fillRect( x2.x, x2.y, size, size);
+		ctx.fillRect( p.x, p.y, size, size);
+
+		step = 0.05;
+
+		for (var i = 0; i <= 1; i += step) {
+			ex1 = x1.x + (p.x - x1.x) * i;
+			ey1 = x1.y + (p.y - x1.y) * i;
+			ex2 = p.x + (x2.x - p.x) * i;
+			ey2 = p.y + (x2.y - p.y) * i;
+			ex3 = ex1 + (ex2 - ex1) * i;
+			ey3 = ey1 + (ey2 - ey1) * i;
+			ctx.fillRect( ex3, ey3, size, size);
+		}
+
+	</script>
+
+</body>
+</html>

@@ -1,7 +1,5 @@
 <?php
 
-	#print_r( $_POST);
-
 	$x1 = array(
 		'x' => floatval($_POST['x1']['x']),
 		'y' => $_POST['x1']['y'],
@@ -21,39 +19,29 @@
 
 	$step = $_POST['step'];
 
-	function getValues( $xInput, $x1, $x2, $p, $stepProportion) {
+	$response['x1'] = $x1;
+	$response['x2'] = $x2;
+	$response['p'] = $p;
+	$response['sequence'] = array();
 
-		$response['x1'] = $x1;
-		$response['x2'] = $x2;
-		$response['p'] = $p;
-		$response['xInput']['x'] = $xInput;
-		$response['xInput']['y'] = getY( $xInput, $x1, $x2, $p);
-		$response['sequence'] = array();
+	for ($i = 0; $i <= 1; $i += $step) {
+		$ex1 = $x1['x'] + ($p['x'] - $x1['x']) * $i;
+		$ey1 = $x1['y'] + ($p['y'] - $x1['y']) * $i;
+		$ex2 = $p['x'] + ($x2['x'] - $p['x']) * $i;
+		$ey2 = $p['y'] + ($x2['y'] - $p['y']) * $i;
+		$response['sequence']['x'][]  = $ex1 + ($ex2 - $ex1) * $i;
+		$response['sequence']['y'][]  = $ey1 + ($ey2 - $ey1) * $i;
+	}
 
-		$step = abs($x1['x'] - $x2['x']) * $stepProportion;
+	for ($i = 0; $i < count($response['sequence']['x']); $i++) {
 
-		for ($x=min($x1['x'],$x2['x']); $x <= max($x1['x'],$x2['x']); $x += $step) {
-			$response['sequence']['x'][] = $x;
-			$response['sequence']['y'][] = getY( $x, $x1, $x2, $p);
+		if( ($response['sequence']['x'][$i] <= $xInput) && ($xInput <= $response['sequence']['x'][$i + 1]) ) {
+			$proportion = ( $xInput - $response['sequence']['x'][$i] ) / ( $response['sequence']['x'][$i + 1] - $response['sequence']['x'][$i] );
+			$response['xInput']['x'] = $xInput;
+			$response['xInput']['y'] = $response['sequence']['y'][$i] + ( $response['sequence']['y'][$i + 1] - $response['sequence']['y'][$i]) * $proportion;
 		}
 
-		return $response;
-
 	}
-
-	function getY( $xInput, $x1, $x2, $p) {
-
-		$proportion = ($xInput - $x1['x']) / ( $x2['x'] - $x1['x']);
-		$stroke1['x'] = $x1['x'] + ($p['x'] - $x1['x']) * $proportion;
-		$stroke1['y'] = $x1['y'] + ($p['y'] - $x1['y']) * $proportion;
-		$stroke2['x'] = $p['x'] + ($x2['x'] - $p['x']) * $proportion;
-		$stroke2['y'] = $p['y'] + ($x2['y'] - $p['y']) * $proportion;
-		$yOutput = $stroke1['y'] + ($stroke2['y'] - $stroke1['y']) * $proportion;
-		return $yOutput;
-
-	}
-
-	$response = getValues( $xInput, $x1, $x2, $p, $step);
 
 	echo json_encode( $response);
 
